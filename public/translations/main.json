@@ -1,0 +1,15 @@
+{
+    "name": "nome",
+    "price": "preço",
+    "slug": "slug",
+    "status": "status",
+    "discount_value": "desconto bruto",
+    "discount_percent": "desconto percentual",
+    "quantity": "quantidade",
+    "expires_in": "validade",
+    "email": "e-mail",
+    "title": "Título",
+    "value": "Preço",
+    "has_local": "Possui local",
+    "user.name": "User"
+}
