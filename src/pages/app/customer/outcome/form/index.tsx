@@ -21,7 +21,7 @@ import { FormSelect } from '../../../../../components/Form/Select';
 import {
     extractCurrencyInputValue,
     dateToInputValue,
-    InputValueToDate,
+    inputValueToDate,
 } from '../../../../../utils/helpers';
 import { typeOptions } from './data';
 
@@ -65,7 +65,7 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         async (data) => {
             try {
                 const reasambleDate = data;
-                reasambleDate.date = InputValueToDate(data.date);
+                reasambleDate.date = inputValueToDate(data.date);
 
                 if (editing)
                     await handleUpdate(editing.id, reasambleDate, 'out');

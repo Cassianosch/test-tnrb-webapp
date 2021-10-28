@@ -8,7 +8,9 @@ import useAdministrationCheck from '../../../../hooks/useTransaction';
 import {
     formatterCurrencyDolar,
     formatterDate,
+    currentDateToFilter,
 } from '../../../../utils/helpers';
+import { FormInput } from '../../../../components/Form/Input';
 
 export const OutcomePage = (): JSX.Element => {
     const [editing, setEditing] = useState<TransactionFormPreloadData | null>(
@@ -24,8 +26,16 @@ export const OutcomePage = (): JSX.Element => {
     } = useAdministrationCheck();
 
     useEffect(() => {
-        handleGetRowsBalance('01-2021', 'out');
+        handleGetRowsBalance(currentDateToFilter(), 'out');
     }, [handleGetRowsBalance]);
+
+    const handleFilter = (e) => {
+        if (e.target.value === '') {
+            handleGetRowsBalance(currentDateToFilter(), 'out');
+            return;
+        }
+        handleGetRowsBalance(e.target.value, 'out');
+    };
 
     return (
         <Container title="Administration Checks" type="app">
@@ -41,6 +51,12 @@ export const OutcomePage = (): JSX.Element => {
             {balance?.transactions && (
                 <>
                     <Heading fontSize="2xl">Expense List</Heading>
+                    <FormInput
+                        name="month"
+                        label="Filter"
+                        type="month"
+                        onChange={handleFilter}
+                    />
                     <Table<TransactionFormPreloadData>
                         columns={['description', 'date', 'amount']}
                         data={balance?.transactions}
