@@ -2,6 +2,7 @@ export interface TransactionFormData {
     amount: number;
     date: string;
     description: string;
+    image?: string;
     type: 'in' | 'out';
     status?: 'pending' | 'accepted' | 'rejected';
 }

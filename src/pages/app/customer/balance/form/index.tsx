@@ -16,6 +16,7 @@ const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup.object().sh
     description: yup.string().required('Descrição obrigatória'),
     type: yup.mixed(),
     status: yup.mixed(),
+    image: yup.mixed(),
 });
 
 interface PlanFormProps {

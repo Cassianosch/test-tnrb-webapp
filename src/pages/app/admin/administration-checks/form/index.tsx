@@ -16,6 +16,7 @@ const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup.object().sh
     description: yup.string().required('Descrição obrigatória'),
     type: yup.mixed(),
     status: yup.mixed(),
+    image: yup.mixed(),
 });
 
 interface PlanFormProps {
@@ -146,9 +147,7 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                         gridGap="4">
                         Foto
                         {/* <Image
-                            src={`${getApiUrl()}announcer-files/${editing.id_announcer * 47829
-                                }/profile/${editing.front_validate_document
-                                }?token=${session.token}`}
+                            src={`https://test-tnrb-api.herokuapp.com/${editing.image}`}
                             fallbackSrc="https://via.placeholder.com/1024x768"
                             alt="Frente"
                             w="100%"
