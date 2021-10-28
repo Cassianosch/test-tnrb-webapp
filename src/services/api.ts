@@ -1,8 +1,7 @@
 import axios from 'axios';
-// import { getApiUrl } from '../utils/helpers';
+import { getApiUrl } from '../utils/helpers';
 
-// const baseURL = getApiUrl();
-const baseURL = 'http://localhost:8000/api/';
+const baseURL = getApiUrl();
 
 const api = axios.create({
     baseURL,
