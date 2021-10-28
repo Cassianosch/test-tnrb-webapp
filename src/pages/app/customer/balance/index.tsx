@@ -17,7 +17,7 @@ export const BalancePage = (): JSX.Element => {
     // }, [handleGetRows]);
 
     return (
-        <Container title="Planos" type="app">
+        <Container title="Balance" type="app">
             balanace
             {/* <Flex direction="column" gridGap="8">
                 <Heading fontSize="2xl">Check Edition</Heading>

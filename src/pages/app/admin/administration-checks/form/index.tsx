@@ -1,23 +1,42 @@
-import React, { useCallback, useEffect } from 'react';
-import { Button, Flex, Grid, GridItem, Text, useToast, Image } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+    Button,
+    Flex,
+    Grid,
+    GridItem,
+    Text,
+    useToast,
+    Image,
+} from '@chakra-ui/react';
 import * as yup from 'yup';
 import { SubmitHandler, Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { TransactionData, TransactionFormData } from '../../../../../interfaces/transaction';
+// import api from '../services/api';
+import api from '../../../../../services/api';
+import {
+    TransactionData,
+    TransactionFormData,
+} from '../../../../../interfaces/transaction';
 import { FormInput } from '../../../../../components/Form/Input';
 import { FormInputCurrency } from '../../../../../components/Form/Input/Currency';
 import { FormSelect } from '../../../../../components/Form/Select';
-import { extractCurrencyInputValue, dateToInputValue } from '../../../../../utils/helpers';
+import {
+    extractCurrencyInputValue,
+    dateToInputValue,
+} from '../../../../../utils/helpers';
 import { typeOptions, statusOptions } from './data';
+import useSession from '../../../../../hooks/useSession';
 
-const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup.object().shape({
-    amount: yup.number().required('Resolução obrigatória'),
-    date: yup.string().nullable(),
-    description: yup.string().required('Descrição obrigatória'),
-    type: yup.mixed(),
-    status: yup.mixed(),
-    image: yup.mixed(),
-});
+const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup
+    .object()
+    .shape({
+        amount: yup.number().required('Resolução obrigatória'),
+        date: yup.string().nullable(),
+        description: yup.string().required('Descrição obrigatória'),
+        type: yup.mixed(),
+        status: yup.mixed(),
+        image: yup.mixed(),
+    });
 
 interface PlanFormProps {
     editing: TransactionData | null;
@@ -27,7 +46,10 @@ interface PlanFormProps {
 }
 
 export const TransactionForm = (props: PlanFormProps): JSX.Element => {
+    const [photoURL, setPhotoURL] = useState<string>('');
     const { editing, setEditing, handleCreate, handleUpdate } = props;
+
+    const { session } = useSession();
 
     const toast = useToast();
 
@@ -60,24 +82,41 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                 });
             }
         },
-        [editing, handleCreate, handleUpdate, reset, setEditing, setValue, toast],
+        [
+            editing,
+            handleCreate,
+            handleUpdate,
+            reset,
+            setEditing,
+            setValue,
+            toast,
+        ],
     );
 
-
+    const handlePhoto = useCallback(
+        (id: number) => {
+            setPhotoURL(
+                `${api.defaults.baseURL}transactions-image/${id}/${session.access_token}`,
+            );
+        },
+        [session.access_token],
+    );
     useEffect(() => {
         if (editing) {
             Object.keys(editing).forEach((key: keyof TransactionFormData) => {
                 if (key in TransactionFormSchema.fields) {
-                    if(key === 'date') {
+                    if (key === 'date') {
                         setValue(key, dateToInputValue(editing[key]));
+                    }
+                    if (key === 'image') {
+                        handlePhoto(editing.id);
                     } else {
                         setValue(key, editing[key]);
                     }
                 }
             });
         } else reset();
-    }, [editing, setValue, reset]);
-
+    }, [editing, setValue, reset, handlePhoto]);
 
     const handleChangePrice = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,14 +191,13 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                         direction={{ base: 'column', sm: 'row' }}
                         h={{ base: 'unset', sm: '40', md: '48', lg: '64' }}
                         gridGap="4">
-                        Foto
-                        {/* <Image
-                            src={`https://test-tnrb-api.herokuapp.com/${editing.image}`}
+                        <Image
+                            src={photoURL}
                             fallbackSrc="https://via.placeholder.com/1024x768"
                             alt="Frente"
                             w="100%"
                             h="100%"
-                        /> */}
+                        />
                     </Flex>
                 </GridItem>
             )}

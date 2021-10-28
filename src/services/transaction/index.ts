@@ -1,4 +1,7 @@
-import { TransactionData, TransactionFormData } from '../../interfaces/transaction';
+import {
+    TransactionData,
+    TransactionFormData,
+} from '../../interfaces/transaction';
 import { serviceErrorHandler } from '../../utils/helpers';
 import api from '../api';
 
@@ -12,6 +15,7 @@ interface TransactionServiceProps {
     _create(data: TransactionFormData): Promise<void>;
     _update(params: _updateParams): Promise<void>;
     _delete(id_plan: number): Promise<void>;
+    _getPhoto(id: number): Promise<string>;
 }
 
 const _getAll = async (): Promise<TransactionData[]> => {
@@ -48,9 +52,20 @@ const _delete = async (id: number): Promise<void> => {
     }
 };
 
+const _getPhoto = async (id: number): Promise<any> => {
+    try {
+        const { data } = await api.get(`transactions-image/${id}`);
+
+        return data;
+    } catch (err) {
+        throw serviceErrorHandler(err);
+    }
+};
+
 export const transactionServices = (): TransactionServiceProps => ({
     _getAll,
     _create,
     _update,
     _delete,
+    _getPhoto,
 });
