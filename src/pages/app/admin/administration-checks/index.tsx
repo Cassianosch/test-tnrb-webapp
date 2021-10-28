@@ -5,10 +5,15 @@ import { TransactionForm } from './form';
 import { Table } from '../../../../components/Table';
 import { TransactionFormPreloadData } from '../../../../interfaces/transaction';
 import useAdministrationCheck from '../../../../hooks/useTransaction';
-import { formatterCurrencyDolar, formatterDate } from '../../../../utils/helpers';
+import {
+    formatterCurrencyDolar,
+    formatterDate,
+} from '../../../../utils/helpers';
 
 export const AdministrationChecksPage = (): JSX.Element => {
-    const [editing, setEditing] = useState<TransactionFormPreloadData | null>(null);
+    const [editing, setEditing] = useState<TransactionFormPreloadData | null>(
+        null,
+    );
 
     const { rows, handleGetRows, handleCreate, handleUpdate, handleDelete } =
         useAdministrationCheck();

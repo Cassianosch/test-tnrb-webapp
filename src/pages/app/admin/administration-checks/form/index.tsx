@@ -105,13 +105,17 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
         if (editing) {
             Object.keys(editing).forEach((key: keyof TransactionFormData) => {
                 if (key in TransactionFormSchema.fields) {
-                    if (key === 'date') {
-                        setValue(key, dateToInputValue(editing[key]));
-                    }
-                    if (key === 'image') {
-                        handlePhoto(editing.id);
-                    } else {
-                        setValue(key, editing[key]);
+                    switch (key) {
+                        case 'date':
+                            setValue(key, dateToInputValue(editing[key]));
+                            break;
+                        case 'image':
+                            handlePhoto(editing.id);
+                            break;
+
+                        default:
+                            setValue(key, editing[key]);
+                            break;
                     }
                 }
             });

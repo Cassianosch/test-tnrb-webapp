@@ -131,13 +131,17 @@ export const dayDiff = (...date: Date[]) => {
             24,
     );
 };
-export const dateToInputValue = (date: string) => new Date(date).toISOString().substr(0,19);
+export const dateToInputValue = (date: string): string =>
+    date.replace(' ', 'T').substr(0, 16);
 
 export const formatterCurrencyDolar = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
 });
 export const formatterDate = new Intl.DateTimeFormat('en-US', {
-    year: '2-digit', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit'
+    year: '2-digit',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
 });

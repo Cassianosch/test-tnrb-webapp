@@ -1,13 +1,14 @@
 import { IconType } from 'react-icons/lib';
 import {
     GoHome,
+    GoLaw,
     GoPerson,
     GoArrowUp,
     GoArrowDown,
     GoGithubAction,
     GoBell,
     GoGear,
-    GoInbox
+    GoBook,
 } from 'react-icons/go';
 
 export interface MenuData {
@@ -28,44 +29,50 @@ export const sidebarMenusCustomer: MenuData[] = [
         id: 1,
         to: '/balance',
         label: 'Balance',
-        icon: GoInbox,
+        icon: GoLaw,
     },
-    // {
-    //     id: 1,
-    //     to: '/balance',
-    //     label: 'Balance',
-    //     icon: GoArrowDown,
-    // },
-    // {
-    //     id: 2,
-    //     to: '/coupons-plan',
-    //     label: 'Expenses',
-    //     icon: GoArrowUp,
-    // },
-    // {
-    //     id: 3,
-    //     to: '/customers',
-    //     label: 'Checks',
-    //     icon: GoGithubAction,
-    // },
-    // {
-    //     id: 4,
-    //     to: '/announcers',
-    //     label: 'Notifications',
-    //     icon: GoBell,
-    // },
-    // {
-    //     id: 5,
-    //     to: '/announcements',
-    //     label: 'Profile',
-    //     icon: GoPerson,
-    // },
-    // {
-    //     id: 6,
-    //     to: '/masters',
-    //     label: 'Settings',
-    //     icon: GoGear,
-    // },
+    {
+        id: 1,
+        to: '/inicomes',
+        label: 'Incomes',
+        icon: GoArrowDown,
+    },
+    {
+        id: 2,
+        to: '/expenses',
+        label: 'Expenses',
+        icon: GoArrowUp,
+    },
+    {
+        id: 3,
+        to: '/checks',
+        label: 'Checks',
+        icon: GoGithubAction,
+    },
+    {
+        id: 4,
+        to: '/notifications',
+        label: 'Notifications',
+        icon: GoBell,
+    },
+    {
+        id: 5,
+        to: '/profile',
+        label: 'Profile',
+        icon: GoPerson,
+    },
+    {
+        id: 6,
+        to: '/settings',
+        label: 'Settings',
+        icon: GoGear,
+    },
+    {
+        id: 7,
+        to: '/hepl',
+        label: 'Help',
+        icon: GoBook,
+    },
 ];
 export const sidebarMenusAdmin: MenuData[] = [
     {
@@ -80,16 +87,4 @@ export const sidebarMenusAdmin: MenuData[] = [
         label: 'Manage Checks',
         icon: GoPerson,
     },
-    // {
-    //     id: 2,
-    //     to: '/profile',
-    //     label: 'Profile',
-    //     icon: GoPerson,
-    // },
-    // {
-    //     id: 3,
-    //     to: '/masters',
-    //     label: 'Settings',
-    //     icon: GoGear,
-    // },
 ];
