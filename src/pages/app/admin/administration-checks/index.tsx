@@ -3,8 +3,9 @@ import { Flex, Heading, Text } from '@chakra-ui/react';
 import { Container } from '../../../../components/Layout';
 import { TransactionForm } from './form';
 import { Table } from '../../../../components/Table';
-import { TransactionData, TransactionFormPreloadData } from '../../../../interfaces/transaction';
+import { TransactionFormPreloadData } from '../../../../interfaces/transaction';
 import useAdministrationCheck from '../../../../hooks/useTransaction';
+import { formatterCurrencyDolar, formatterDate } from '../../../../utils/helpers';
 
 export const AdministrationChecksPage = (): JSX.Element => {
     const [editing, setEditing] = useState<TransactionFormPreloadData | null>(null);
@@ -37,11 +38,16 @@ export const AdministrationChecksPage = (): JSX.Element => {
                 onClickDelete={({ id }) => handleDelete(id)}
                 paginationProps={{ total: 0, current: 1 }}
                 customRenderers={{
-                    // amount: (value) => (
-                    //     <Text as="span" fontWeight="normal">
-                    //         {`$ ${value}`}
-                    //     </Text>
-                    // ),
+                    date: (value) => (
+                        <Text as="span" fontWeight="normal">
+                            {formatterDate.format(new Date(value))}
+                        </Text>
+                    ),
+                    amount: (value) => (
+                        <Text as="span" fontWeight="normal">
+                            {formatterCurrencyDolar.format(value)}
+                        </Text>
+                    ),
                 }}
             />
         </Container>
