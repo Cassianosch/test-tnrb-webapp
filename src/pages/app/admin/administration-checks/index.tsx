@@ -40,7 +40,7 @@ export const AdministrationChecksPage = (): JSX.Element => {
                 columns={['user.name', 'description', 'date', 'amount']}
                 data={rows}
                 onClickEdit={(row) => setEditing(row)}
-                onClickDelete={({ id }) => handleDelete(id)}
+                onClickDelete={({ id }) => handleDelete(id, 'inout')}
                 paginationProps={{ total: 0, current: 1 }}
                 customRenderers={{
                     date: (value) => (

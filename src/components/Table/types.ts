@@ -29,7 +29,9 @@ export interface TableWrapperProps<T = Record<string, string | number>[]> {
     onClickEdit?(row: T): void;
     onClickDelete?(row: T, showToast?: boolean): Promise<void>;
     paginationProps: PaginationProps;
-    customRenderers?: { [key in keyof T]?: (value: T[key]) => JSX.Element };
+    customRenderers?: {
+        [key in keyof T]?: (value: T[key], column?) => JSX.Element;
+    };
     onClickDetail?(row: T): void;
 }
 
@@ -45,7 +47,9 @@ export interface TableHeadProps<T> {
 export interface TableColumnProps<T> {
     row: T;
     column: keyof T;
-    customRenderers?: { [key in keyof T]?: (value: T[key]) => JSX.Element };
+    customRenderers?: {
+        [key in keyof T]?: (value: T[key], column?) => JSX.Element;
+    };
 }
 
 export interface TableRowProps<T> extends Omit<TableColumnProps<T>, 'column'> {

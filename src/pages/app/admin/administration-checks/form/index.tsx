@@ -14,7 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import api from '../../../../../services/api';
 import {
     TransactionData,
-    TransactionFormData,
+    TransactionFormImageData,
 } from '../../../../../interfaces/transaction';
 import { FormInput } from '../../../../../components/Form/Input';
 import { FormInputCurrency } from '../../../../../components/Form/Input/Currency';
@@ -26,7 +26,7 @@ import {
 import { typeOptions, statusOptions } from './data';
 import useSession from '../../../../../hooks/useSession';
 
-const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup
+const TransactionFormSchema: yup.SchemaOf<TransactionFormImageData> = yup
     .object()
     .shape({
         amount: yup.number().required('Resolução obrigatória'),
@@ -40,8 +40,11 @@ const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup
 interface TransactionFormProps {
     editing: TransactionData | null;
     setEditing: React.Dispatch<React.SetStateAction<TransactionData | null>>;
-    handleCreate(values: TransactionFormData): Promise<void>;
-    handleUpdate(id_master: number, values: TransactionFormData): Promise<void>;
+    handleCreate(values: TransactionFormImageData): Promise<void>;
+    handleUpdate(
+        id_master: number,
+        values: TransactionFormImageData,
+    ): Promise<void>;
 }
 
 export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
@@ -59,10 +62,10 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         handleSubmit,
         reset,
         formState: { errors, isSubmitting },
-    } = useForm<TransactionFormData>({
+    } = useForm<TransactionFormImageData>({
         resolver: yupResolver(TransactionFormSchema),
     });
-    const onSubmit = useCallback<SubmitHandler<TransactionFormData>>(
+    const onSubmit = useCallback<SubmitHandler<TransactionFormImageData>>(
         async (data) => {
             try {
                 if (editing) await handleUpdate(editing.id, data);
@@ -102,22 +105,24 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
     );
     useEffect(() => {
         if (editing) {
-            Object.keys(editing).forEach((key: keyof TransactionFormData) => {
-                if (key in TransactionFormSchema.fields) {
-                    switch (key) {
-                        case 'date':
-                            setValue(key, dateToInputValue(editing[key]));
-                            break;
-                        case 'image':
-                            handlePhoto(editing.id);
-                            break;
+            Object.keys(editing).forEach(
+                (key: keyof TransactionFormImageData) => {
+                    if (key in TransactionFormSchema.fields) {
+                        switch (key) {
+                            case 'date':
+                                setValue(key, dateToInputValue(editing[key]));
+                                break;
+                            case 'image':
+                                handlePhoto(editing.id);
+                                break;
 
-                        default:
-                            setValue(key, editing[key]);
-                            break;
+                            default:
+                                setValue(key, editing[key]);
+                                break;
+                        }
                     }
-                }
-            });
+                },
+            );
         } else reset();
     }, [editing, setValue, reset, handlePhoto]);
 

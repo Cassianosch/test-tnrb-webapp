@@ -38,7 +38,7 @@ export const OutcomePage = (): JSX.Element => {
     };
 
     return (
-        <Container title="Administration Checks" type="app">
+        <Container title="Expenses" type="app">
             <Flex direction="column" gridGap="8">
                 <Heading fontSize="2xl">Expense Edition</Heading>
                 <TransactionForm
@@ -55,6 +55,7 @@ export const OutcomePage = (): JSX.Element => {
                         name="month"
                         label="Filter"
                         type="month"
+                        defaultValue={currentDateToFilter()}
                         onChange={handleFilter}
                     />
                     <Table<TransactionFormPreloadData>

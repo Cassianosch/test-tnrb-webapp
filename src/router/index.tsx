@@ -31,7 +31,7 @@ const AuthRoutes = (): JSX.Element => (
 
 const AppRoutesCustomers = (): JSX.Element => (
     <Switch>
-        <Route exact path="/" component={HomePage} />
+        {/* <Route exact path="/" component={HomePage} /> */}
         <Route exact path="/balance" component={BalancePage} />
         <Route exact path="/income/:type?" component={IncomePage} />
         <Route exact path="/outcome" component={OutcomePage} />
@@ -40,7 +40,7 @@ const AppRoutesCustomers = (): JSX.Element => (
         <Route exact path="/setting" component={SettingPage} />
         <Route exact path="/help" component={HelpPage} />
         <Route>
-            <Redirect to="/" />
+            <Redirect to="/balance" />
         </Route>
     </Switch>
 );

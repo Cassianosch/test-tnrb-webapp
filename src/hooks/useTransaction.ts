@@ -3,6 +3,7 @@ import {
     TransactionData,
     TransactionFormData,
     TransactionFormBalanceData,
+    TransactionFormIncomeData,
 } from '../interfaces/transaction';
 import { transactionServices } from '../services/transaction';
 import useCustomToast from './useCustomToast';
@@ -13,6 +14,8 @@ interface useTransactionHookData {
     handleGetRows(type?: string): Promise<void>;
     balance: TransactionFormBalanceData;
     handleGetRowsBalance(period?: string, type?: string): Promise<void>;
+    incomes: TransactionFormIncomeData;
+    handleGetRowsIncome(period?: string): Promise<void>;
     handleCreate(values: TransactionFormData, type?: string): Promise<void>;
     handleUpdate(
         id_plan: number,
@@ -25,10 +28,11 @@ interface useTransactionHookData {
 export default (): useTransactionHookData => {
     const [rows, setRows] = useState<TransactionData[]>([]);
     const [balance, setBalance] = useState<TransactionFormBalanceData>();
+    const [incomes, setIncomes] = useState<TransactionFormIncomeData>();
 
     const { showErrorToast, showSuccessToast } = useCustomToast();
 
-    const { _getAll, _getBalance, _create, _update, _delete } =
+    const { _getAll, _getBalance, _getIncomes, _create, _update, _delete } =
         transactionServices();
 
     const { session } = useSession();
@@ -53,6 +57,18 @@ export default (): useTransactionHookData => {
             }
         },
         [_getBalance, showErrorToast],
+    );
+
+    const handleGetRowsIncome = useCallback(
+        async (period = '') => {
+            try {
+                const data = await _getIncomes(period);
+                setIncomes(data);
+            } catch (err) {
+                showErrorToast(err);
+            }
+        },
+        [_getIncomes, showErrorToast],
     );
 
     const handleCreate = useCallback(
@@ -125,8 +141,10 @@ export default (): useTransactionHookData => {
     return {
         rows,
         balance,
+        incomes,
         handleGetRows,
         handleGetRowsBalance,
+        handleGetRowsIncome,
         handleCreate,
         handleUpdate,
         handleDelete,

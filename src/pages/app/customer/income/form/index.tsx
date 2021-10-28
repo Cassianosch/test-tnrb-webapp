@@ -1,32 +1,52 @@
-import React, { useCallback, useEffect } from 'react';
-import { Button, Flex, Grid, GridItem, Text, useToast, Image } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+    Button,
+    Flex,
+    Grid,
+    GridItem,
+    Text,
+    useToast,
+    Image,
+} from '@chakra-ui/react';
 import * as yup from 'yup';
 import { SubmitHandler, Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { TransactionData, TransactionFormData } from '../../../../../interfaces/transaction';
+import {
+    TransactionData,
+    TransactionFormData,
+} from '../../../../../interfaces/transaction';
 import { FormInput } from '../../../../../components/Form/Input';
 import { FormInputCurrency } from '../../../../../components/Form/Input/Currency';
 import { FormSelect } from '../../../../../components/Form/Select';
-import { extractCurrencyInputValue } from '../../../../../utils/helpers';
-import { typeOptions, statusOptions } from './data';
+import {
+    extractCurrencyInputValue,
+    dateToInputValue,
+    inputValueToDate,
+} from '../../../../../utils/helpers';
+import { typeOptions } from './data';
 
-const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup.object().shape({
-    amount: yup.number().required('Resolução obrigatória'),
-    date: yup.string().nullable(),
-    description: yup.string().required('Descrição obrigatória'),
-    type: yup.mixed(),
-    status: yup.mixed(),
-    image: yup.mixed(),
-});
+const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup
+    .object()
+    .shape({
+        amount: yup.number().required('Resolução obrigatória'),
+        date: yup.string().nullable(),
+        description: yup.string().required('Descrição obrigatória'),
+        type: yup.mixed(),
+        status: yup.mixed(),
+    });
 
-interface PlanFormProps {
+interface TransactionFormProps {
     editing: TransactionData | null;
     setEditing: React.Dispatch<React.SetStateAction<TransactionData | null>>;
-    handleCreate(values: TransactionFormData): Promise<void>;
-    handleUpdate(id_master: number, values: TransactionFormData): Promise<void>;
+    handleCreate(values: TransactionFormData, type: string): Promise<void>;
+    handleUpdate(
+        id_master: number,
+        values: TransactionFormData,
+        type: string,
+    ): Promise<void>;
 }
 
-export const TransactionForm = (props: PlanFormProps): JSX.Element => {
+export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
     const { editing, setEditing, handleCreate, handleUpdate } = props;
 
     const toast = useToast();
@@ -41,15 +61,19 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
     } = useForm<TransactionFormData>({
         resolver: yupResolver(TransactionFormSchema),
     });
-
     const onSubmit = useCallback<SubmitHandler<TransactionFormData>>(
         async (data) => {
             try {
-                if (editing) await handleUpdate(editing.id, data);
-                else await handleCreate(data);
+                const reasambleDate = data;
+                reasambleDate.date = inputValueToDate(data.date);
+
+                if (editing)
+                    await handleUpdate(editing.id, reasambleDate, 'out');
+                else await handleCreate(reasambleDate, 'out');
 
                 setEditing(null);
 
+                setValue('amount', 0);
                 reset();
             } catch (err) {
                 toast({
@@ -60,25 +84,44 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                 });
             }
         },
-        [editing, handleCreate, handleUpdate, reset, setEditing, toast],
+        [
+            editing,
+            handleCreate,
+            handleUpdate,
+            reset,
+            setEditing,
+            setValue,
+            toast,
+        ],
     );
 
     useEffect(() => {
         if (editing) {
             Object.keys(editing).forEach((key: keyof TransactionFormData) => {
                 if (key in TransactionFormSchema.fields) {
-                    setValue(key, editing[key]);
+                    switch (key) {
+                        case 'date':
+                            setValue(key, dateToInputValue(editing[key]));
+                            break;
+                        default:
+                            setValue(key, editing[key]);
+                            break;
+                    }
                 }
             });
         } else reset();
     }, [editing, setValue, reset]);
 
-    // const handleChangePrice = useCallback(
-    //     (event: React.ChangeEvent<HTMLInputElement>) => {
-    //         setValue('price', extractCurrencyInputValue(event.target.value));
-    //     },
-    //     [setValue],
-    // );
+    const handleChangePrice = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            setValue('amount', extractCurrencyInputValue(event.target.value));
+        },
+        [setValue],
+    );
+    const handleCancelEdit = useCallback(() => {
+        setEditing(null);
+        setValue('amount', 0);
+    }, [setEditing, setValue]);
 
     return (
         <Grid
@@ -96,6 +139,7 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                             error={errors.amount}
                             autoComplete="off"
                             {...field}
+                            onChange={handleChangePrice}
                         />
                     )}
                     control={control}
@@ -117,7 +161,7 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                     name="description"
                     label="Description"
                     error={errors.description}
-                    placeholder="Tenha seus anúncios ativos por 30 dias"
+                    placeholder="Description"
                     {...register('description')}
                 />
             </GridItem>
@@ -130,34 +174,22 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                     {...register('type')}
                 />
             </GridItem>
-            <GridItem colSpan={{ base: 6, md: 3 }}>
-                <FormSelect
-                    name="status"
-                    label="Status"
-                    error={errors.status}
-                    options={statusOptions}
-                    {...register('status')}
-                />
-            </GridItem>
-            {editing && (
+            {/* {editing && (
                 <GridItem colSpan={{ base: 6, md: 4, lg: 3 }}>
                     <Flex
                         direction={{ base: 'column', sm: 'row' }}
                         h={{ base: 'unset', sm: '40', md: '48', lg: '64' }}
                         gridGap="4">
-                        Foto
-                        {/* <Image
-                            src={`${getApiUrl()}announcer-files/${editing.id_announcer * 47829
-                                }/profile/${editing.front_validate_document
-                                }?token=${session.token}`}
+                        <Image
+                            src={photoURL}
                             fallbackSrc="https://via.placeholder.com/1024x768"
                             alt="Frente"
                             w="100%"
                             h="100%"
-                        /> */}
+                        />
                     </Flex>
                 </GridItem>
-            )}
+            )} */}
             <GridItem colSpan={6}>
                 <Flex
                     direction="row"
@@ -169,7 +201,7 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                             type="button"
                             colorScheme="blue"
                             variant="ghost"
-                            onClick={() => setEditing(null)}>
+                            onClick={handleCancelEdit}>
                             <Text fontSize="sm" fontWeight="normal">
                                 Cancel Edit
                             </Text>

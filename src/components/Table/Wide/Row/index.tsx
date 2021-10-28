@@ -10,14 +10,15 @@ function TableColumn<T>(props: TableColumnProps<T>): JSX.Element {
     const hasCustomRenderer = customRenderers && column in customRenderers;
 
     const handleValueRow = (rowEl, columns) => {
-        const splittedColumns = columns.split(".");
-        if (splittedColumns.length === 2) return rowEl[splittedColumns[0]][splittedColumns[1]];
+        const splittedColumns = columns.split('.');
+        if (splittedColumns.length === 2)
+            return rowEl[splittedColumns[0]][splittedColumns[1]];
         return rowEl[splittedColumns[0]];
-    }
+    };
     return (
         <Td>
             {hasCustomRenderer ? (
-                customRenderers[column](row[column])
+                customRenderers[column](row[column], row)
             ) : (
                 <Text>{handleValueRow(row, column)}</Text>
             )}

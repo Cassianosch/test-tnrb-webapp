@@ -29,3 +29,8 @@ export interface TransactionFormBalanceData {
     negative: number;
     transactions: TransactionData[];
 }
+export interface TransactionFormIncomeData {
+    pending: TransactionData[];
+    accepted: TransactionData[];
+    rejected: TransactionData[];
+}
