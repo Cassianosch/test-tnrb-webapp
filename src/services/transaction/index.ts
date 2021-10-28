@@ -1,6 +1,7 @@
 import {
     TransactionData,
     TransactionFormData,
+    TransactionFormBalanceData,
 } from '../../interfaces/transaction';
 import { serviceErrorHandler } from '../../utils/helpers';
 import api from '../api';
@@ -12,6 +13,10 @@ interface _updateParams {
 
 interface TransactionServiceProps {
     _getAll(): Promise<TransactionData[]>;
+    _getBalance(
+        period: string,
+        type: string,
+    ): Promise<TransactionFormBalanceData>;
     _create(data: TransactionFormData): Promise<void>;
     _update(params: _updateParams): Promise<void>;
     _delete(id_plan: number): Promise<void>;
@@ -23,6 +28,20 @@ const _getAll = async (): Promise<TransactionData[]> => {
         const { data: plans } = await api.get('transactions');
 
         return plans;
+    } catch (err) {
+        throw serviceErrorHandler(err);
+    }
+};
+const _getBalance = async (
+    period = '',
+    type = '',
+): Promise<TransactionFormBalanceData> => {
+    try {
+        const { data } = await api.get(
+            `transactions-balance?period=${period}&type=${type}`,
+        );
+
+        return data;
     } catch (err) {
         throw serviceErrorHandler(err);
     }
@@ -64,6 +83,7 @@ const _getPhoto = async (id: number): Promise<any> => {
 
 export const transactionServices = (): TransactionServiceProps => ({
     _getAll,
+    _getBalance,
     _create,
     _update,
     _delete,

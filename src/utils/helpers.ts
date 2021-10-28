@@ -134,6 +134,9 @@ export const dayDiff = (...date: Date[]) => {
 export const dateToInputValue = (date: string): string =>
     date.replace(' ', 'T').substr(0, 16);
 
+export const InputValueToDate = (date: string): string =>
+    `${date.replace('T', ' ')}:00`;
+
 export const formatterCurrencyDolar = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',

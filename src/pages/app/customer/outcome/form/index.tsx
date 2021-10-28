@@ -11,7 +11,6 @@ import {
 import * as yup from 'yup';
 import { SubmitHandler, Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import api from '../../../../../services/api';
 import {
     TransactionData,
     TransactionFormData,
@@ -22,9 +21,9 @@ import { FormSelect } from '../../../../../components/Form/Select';
 import {
     extractCurrencyInputValue,
     dateToInputValue,
+    InputValueToDate,
 } from '../../../../../utils/helpers';
-import { typeOptions, statusOptions } from './data';
-import useSession from '../../../../../hooks/useSession';
+import { typeOptions } from './data';
 
 const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup
     .object()
@@ -34,21 +33,21 @@ const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup
         description: yup.string().required('Descrição obrigatória'),
         type: yup.mixed(),
         status: yup.mixed(),
-        image: yup.mixed(),
     });
 
 interface TransactionFormProps {
     editing: TransactionData | null;
     setEditing: React.Dispatch<React.SetStateAction<TransactionData | null>>;
-    handleCreate(values: TransactionFormData): Promise<void>;
-    handleUpdate(id_master: number, values: TransactionFormData): Promise<void>;
+    handleCreate(values: TransactionFormData, type: string): Promise<void>;
+    handleUpdate(
+        id_master: number,
+        values: TransactionFormData,
+        type: string,
+    ): Promise<void>;
 }
 
 export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
-    const [photoURL, setPhotoURL] = useState<string>('');
     const { editing, setEditing, handleCreate, handleUpdate } = props;
-
-    const { session } = useSession();
 
     const toast = useToast();
 
@@ -65,8 +64,12 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
     const onSubmit = useCallback<SubmitHandler<TransactionFormData>>(
         async (data) => {
             try {
-                if (editing) await handleUpdate(editing.id, data);
-                else await handleCreate(data);
+                const reasambleDate = data;
+                reasambleDate.date = InputValueToDate(data.date);
+
+                if (editing)
+                    await handleUpdate(editing.id, reasambleDate, 'out');
+                else await handleCreate(reasambleDate, 'out');
 
                 setEditing(null);
 
@@ -92,14 +95,6 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         ],
     );
 
-    const handlePhoto = useCallback(
-        (id: number) => {
-            setPhotoURL(
-                `${api.defaults.baseURL}transactions-image/${id}/${session.access_token}`,
-            );
-        },
-        [session.access_token],
-    );
     useEffect(() => {
         if (editing) {
             Object.keys(editing).forEach((key: keyof TransactionFormData) => {
@@ -108,10 +103,6 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                         case 'date':
                             setValue(key, dateToInputValue(editing[key]));
                             break;
-                        case 'image':
-                            handlePhoto(editing.id);
-                            break;
-
                         default:
                             setValue(key, editing[key]);
                             break;
@@ -119,7 +110,7 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                 }
             });
         } else reset();
-    }, [editing, setValue, reset, handlePhoto]);
+    }, [editing, setValue, reset]);
 
     const handleChangePrice = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +118,10 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         },
         [setValue],
     );
+    const handleCancelEdit = useCallback(() => {
+        setEditing(null);
+        setValue('amount', 0);
+    }, [setEditing, setValue]);
 
     return (
         <Grid
@@ -179,16 +174,7 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                     {...register('type')}
                 />
             </GridItem>
-            <GridItem colSpan={{ base: 6, md: 3 }}>
-                <FormSelect
-                    name="status"
-                    label="Status"
-                    error={errors.status}
-                    options={statusOptions}
-                    {...register('status')}
-                />
-            </GridItem>
-            {editing && (
+            {/* {editing && (
                 <GridItem colSpan={{ base: 6, md: 4, lg: 3 }}>
                     <Flex
                         direction={{ base: 'column', sm: 'row' }}
@@ -203,7 +189,7 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                         />
                     </Flex>
                 </GridItem>
-            )}
+            )} */}
             <GridItem colSpan={6}>
                 <Flex
                     direction="row"
@@ -215,7 +201,7 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                             type="button"
                             colorScheme="blue"
                             variant="ghost"
-                            onClick={() => setEditing(null)}>
+                            onClick={handleCancelEdit}>
                             <Text fontSize="sm" fontWeight="normal">
                                 Cancel Edit
                             </Text>

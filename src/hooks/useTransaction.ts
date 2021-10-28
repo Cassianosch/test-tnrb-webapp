@@ -1,22 +1,37 @@
 import { useCallback, useState } from 'react';
-import { TransactionData, TransactionFormData } from '../interfaces/transaction';
+import {
+    TransactionData,
+    TransactionFormData,
+    TransactionFormBalanceData,
+} from '../interfaces/transaction';
 import { transactionServices } from '../services/transaction';
 import useCustomToast from './useCustomToast';
+import useSession from './useSession';
 
 interface useTransactionHookData {
     rows: TransactionData[];
-    handleGetRows(): Promise<void>;
-    handleCreate(values: TransactionFormData): Promise<void>;
-    handleUpdate(id_plan: number, values: TransactionFormData): Promise<void>;
-    handleDelete(id_plan: number): Promise<void>;
+    handleGetRows(type?: string): Promise<void>;
+    balance: TransactionFormBalanceData;
+    handleGetRowsBalance(period?: string, type?: string): Promise<void>;
+    handleCreate(values: TransactionFormData, type?: string): Promise<void>;
+    handleUpdate(
+        id_plan: number,
+        values: TransactionFormData,
+        type?: string,
+    ): Promise<void>;
+    handleDelete(id_plan: number, type: string): Promise<void>;
 }
 
 export default (): useTransactionHookData => {
     const [rows, setRows] = useState<TransactionData[]>([]);
+    const [balance, setBalance] = useState<TransactionFormBalanceData>();
 
     const { showErrorToast, showSuccessToast } = useCustomToast();
 
-    const { _getAll, _create, _update, _delete } = transactionServices();
+    const { _getAll, _getBalance, _create, _update, _delete } =
+        transactionServices();
+
+    const { session } = useSession();
 
     const handleGetRows = useCallback(async () => {
         try {
@@ -28,54 +43,90 @@ export default (): useTransactionHookData => {
         }
     }, [_getAll, showErrorToast]);
 
+    const handleGetRowsBalance = useCallback(
+        async (period = '', type = '') => {
+            try {
+                const data = await _getBalance(period, type);
+                setBalance(data);
+            } catch (err) {
+                showErrorToast(err);
+            }
+        },
+        [_getBalance, showErrorToast],
+    );
+
     const handleCreate = useCallback(
-        async (values: TransactionFormData) => {
+        async (values: TransactionFormData, type: string) => {
             try {
                 await _create(values);
 
-                await handleGetRows();
+                await handleGetRowsBalance('01-2021', type);
 
-                showSuccessToast('Check successfully created.');
+                showSuccessToast('Successfully created.');
             } catch (err) {
                 showErrorToast(err);
             }
         },
-        [_create, handleGetRows, showErrorToast, showSuccessToast],
+        [_create, handleGetRowsBalance, showErrorToast, showSuccessToast],
     );
 
     const handleUpdate = useCallback(
-        async (id: number, values: TransactionFormData) => {
+        async (id: number, values: TransactionFormData, type = 'in') => {
             try {
                 await _update({ id, data: values });
 
-                await handleGetRows();
+                if (session && session.user.admin === 1) {
+                    await handleGetRows();
+                } else {
+                    await handleGetRowsBalance('01-2021', type);
+                }
 
-                showSuccessToast('Check successfully updated.');
+                showSuccessToast('Successfully updated.');
             } catch (err) {
                 showErrorToast(err);
             }
         },
-        [_update, handleGetRows, showErrorToast, showSuccessToast],
+        [
+            _update,
+            handleGetRows,
+            handleGetRowsBalance,
+            session,
+            showErrorToast,
+            showSuccessToast,
+        ],
     );
 
     const handleDelete = useCallback(
-        async (id: number) => {
+        async (id: number, type: string) => {
             try {
                 await _delete(id);
 
-                await handleGetRows();
+                if (session && session.user.admin === 1) {
+                    await handleGetRows();
+                } else {
+                    await handleGetRowsBalance('01-2021', type);
+                }
 
-                showSuccessToast('Check successfully deleted.');
+                showSuccessToast('Successfully deleted.');
             } catch (err) {
                 showErrorToast(err);
             }
         },
-        [_delete, handleGetRows, showErrorToast, showSuccessToast],
+        [
+            _delete,
+            handleGetRows,
+            handleGetRowsBalance,
+            session,
+            showErrorToast,
+            showSuccessToast,
+        ],
     );
 
     return {
         rows,
+        balance,
         handleGetRows,
+        handleGetRowsBalance,
         handleCreate,
         handleUpdate,
         handleDelete,
