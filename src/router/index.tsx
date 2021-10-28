@@ -4,12 +4,13 @@ import useSession from '../hooks/useSession';
 import { HomePage } from '../pages/app/home';
 import { LoginPage } from '../pages/auth/login';
 import { BalancePage } from '../pages/app/customer/balance';
-// import { SignupPage } from '../pages/app/signup';
+import { SignupPage } from '../pages/auth/signup';
 import { AdministrationChecksPage } from '../pages/app/admin/administration-checks';
 import useApi from '../hooks/useApi';
 
 const AuthRoutes = (): JSX.Element => (
     <Switch>
+        <Route exact path="/signup" component={SignupPage} />
         <Route exact path="/login" component={LoginPage} />
         <Route>
             <Redirect to="/login" />

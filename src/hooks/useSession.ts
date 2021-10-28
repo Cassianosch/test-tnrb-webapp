@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 import { SessionData } from '../interfaces/session';
+import { SignupFormData } from '../interfaces/auth';
 import api from '../services/api';
 import { sessionServices } from '../services/session';
 import { sessionState } from '../store/session';

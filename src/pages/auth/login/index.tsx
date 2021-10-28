@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import { Button, Flex, Heading, Text, useToast } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -85,6 +86,9 @@ export const LoginPage = (): JSX.Element => {
                     <Text>Entrar</Text>
                 </Button>
             </Flex>
+            <Link to="/signup">
+                <Text fontSize="xl">Signup</Text>
+            </Link>
         </Container>
     );
 };
