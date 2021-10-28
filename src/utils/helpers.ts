@@ -131,3 +131,4 @@ export const dayDiff = (...date: Date[]) => {
             24,
     );
 };
+export const dateToInputValue = (date: string) => new Date(date).toISOString().substr(0,19)

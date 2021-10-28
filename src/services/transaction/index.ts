@@ -34,7 +34,7 @@ const _create = async (data: TransactionFormData): Promise<void> => {
 
 const _update = async (params: _updateParams): Promise<void> => {
     try {
-        await api.put(`transactions/${params.id}`, params.data);
+        await api.patch(`transactions/${params.id}`, params.data);
     } catch (err) {
         throw serviceErrorHandler(err);
     }

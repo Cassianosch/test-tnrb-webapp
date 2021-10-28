@@ -7,7 +7,7 @@ import { TransactionData, TransactionFormData } from '../../../../../interfaces/
 import { FormInput } from '../../../../../components/Form/Input';
 import { FormInputCurrency } from '../../../../../components/Form/Input/Currency';
 import { FormSelect } from '../../../../../components/Form/Select';
-import { extractCurrencyInputValue } from '../../../../../utils/helpers';
+import { extractCurrencyInputValue, dateToInputValue } from '../../../../../utils/helpers';
 import { typeOptions, statusOptions } from './data';
 
 const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup.object().shape({
@@ -41,7 +41,6 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
     } = useForm<TransactionFormData>({
         resolver: yupResolver(TransactionFormSchema),
     });
-
     const onSubmit = useCallback<SubmitHandler<TransactionFormData>>(
         async (data) => {
             try {
@@ -50,6 +49,7 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
 
                 setEditing(null);
 
+                setValue('amount', 0);
                 reset();
             } catch (err) {
                 toast({
@@ -60,25 +60,31 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                 });
             }
         },
-        [editing, handleCreate, handleUpdate, reset, setEditing, toast],
+        [editing, handleCreate, handleUpdate, reset, setEditing, setValue, toast],
     );
+
 
     useEffect(() => {
         if (editing) {
             Object.keys(editing).forEach((key: keyof TransactionFormData) => {
                 if (key in TransactionFormSchema.fields) {
-                    setValue(key, editing[key]);
+                    if(key === 'date') {
+                        setValue(key, dateToInputValue(editing[key]));
+                    } else {
+                        setValue(key, editing[key]);
+                    }
                 }
             });
         } else reset();
     }, [editing, setValue, reset]);
 
-    // const handleChangePrice = useCallback(
-    //     (event: React.ChangeEvent<HTMLInputElement>) => {
-    //         setValue('price', extractCurrencyInputValue(event.target.value));
-    //     },
-    //     [setValue],
-    // );
+
+    const handleChangePrice = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            setValue('amount', extractCurrencyInputValue(event.target.value));
+        },
+        [setValue],
+    );
 
     return (
         <Grid
@@ -96,6 +102,7 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                             error={errors.amount}
                             autoComplete="off"
                             {...field}
+                            onChange={handleChangePrice}
                         />
                     )}
                     control={control}
@@ -117,7 +124,7 @@ export const TransactionForm = (props: PlanFormProps): JSX.Element => {
                     name="description"
                     label="Description"
                     error={errors.description}
-                    placeholder="Tenha seus anúncios ativos por 30 dias"
+                    placeholder="Description"
                     {...register('description')}
                 />
             </GridItem>
