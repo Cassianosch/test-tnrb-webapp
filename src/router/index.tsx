@@ -1,11 +1,22 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import useSession from '../hooks/useSession';
+
 import { HomePage } from '../pages/app/home';
-import { LoginPage } from '../pages/auth/login';
-import { BalancePage } from '../pages/app/customer/balance';
+
 import { SignupPage } from '../pages/auth/signup';
+import { LoginPage } from '../pages/auth/login';
+
 import { AdministrationChecksPage } from '../pages/app/admin/administration-checks';
+
+import { BalancePage } from '../pages/app/customer/balance';
+import { IncomePage } from '../pages/app/customer/income';
+import { OutcomePage } from '../pages/app/customer/outcome';
+import { NotificationPage } from '../pages/app/customer/notification';
+import { ProfilePage } from '../pages/app/customer/profile';
+import { SettingPage } from '../pages/app/customer/setting';
+import { HelpPage } from '../pages/app/customer/help';
+
 import useApi from '../hooks/useApi';
 
 const AuthRoutes = (): JSX.Element => (
@@ -22,6 +33,12 @@ const AppRoutesCustomers = (): JSX.Element => (
     <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/balance" component={BalancePage} />
+        <Route exact path="/income/:type?" component={IncomePage} />
+        <Route exact path="/outcome" component={OutcomePage} />
+        <Route exact path="/notification" component={NotificationPage} />
+        <Route exact path="/profile" component={ProfilePage} />
+        <Route exact path="/setting" component={SettingPage} />
+        <Route exact path="/help" component={HelpPage} />
         <Route>
             <Redirect to="/" />
         </Route>
@@ -31,7 +48,11 @@ const AppRoutesCustomers = (): JSX.Element => (
 const AppRoutesAdmins = (): JSX.Element => (
     <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route exact path="/administration-checks" component={AdministrationChecksPage} />
+        <Route
+            exact
+            path="/administration-checks"
+            component={AdministrationChecksPage}
+        />
         <Route>
             <Redirect to="/" />
         </Route>
@@ -50,17 +71,11 @@ export const Router = (): JSX.Element => {
     const handleRoutes = () => {
         if (session && session.access_token) {
             if (session.user.admin === 1) {
-                return <AppRoutesAdmins />
+                return <AppRoutesAdmins />;
             }
-            return <AppRoutesCustomers />
+            return <AppRoutesCustomers />;
         }
         return <AuthRoutes />;
-    }
-    return (
-        <BrowserRouter>
-            {
-                handleRoutes()
-            }
-        </BrowserRouter>
-    );
+    };
+    return <BrowserRouter>{handleRoutes()}</BrowserRouter>;
 };
