@@ -42,6 +42,7 @@ export interface TableHeadProps<T> {
     toggleSort(column: keyof T): void;
     SortOrderIcon: IconType;
     sortKey: keyof T;
+    onClickDelete: any;
 }
 
 export interface TableColumnProps<T> {

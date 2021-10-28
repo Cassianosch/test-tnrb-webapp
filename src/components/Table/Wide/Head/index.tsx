@@ -19,6 +19,7 @@ export function TableHead<T>(props: TableHeadProps<T>): JSX.Element {
         toggleSort,
         SortOrderIcon,
         sortKey,
+        onClickDelete,
     } = props;
 
     const { translate } = useTranslation();
@@ -26,14 +27,16 @@ export function TableHead<T>(props: TableHeadProps<T>): JSX.Element {
     return (
         <Thead>
             <Tr>
-                <Th px="6" color="gray.300" width="8">
-                    <Checkbox
-                        colorScheme="facebook"
-                        borderColor="gray.700"
-                        isChecked={isMainCheckboxChecked}
-                        onChange={handleToggleMainCheckbox}
-                    />
-                </Th>
+                {onClickDelete && (
+                    <Th px="6" color="gray.300" width="8">
+                        <Checkbox
+                            colorScheme="facebook"
+                            borderColor="gray.700"
+                            isChecked={isMainCheckboxChecked}
+                            onChange={handleToggleMainCheckbox}
+                        />
+                    </Th>
+                )}
                 {columns.map((column, index) => (
                     <Th key={`column-${index}`}>
                         <Button

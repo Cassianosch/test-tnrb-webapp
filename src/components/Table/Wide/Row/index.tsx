@@ -57,14 +57,16 @@ export function TableRow<T>(props: TableRowProps<T>): JSX.Element {
 
     return (
         <Tr>
-            <Td px="6">
-                <Checkbox
-                    colorScheme="facebook"
-                    borderColor="gray.700"
-                    isChecked={isRowSelected}
-                    onChange={handleToggleRow}
-                />
-            </Td>
+            {onClickDelete && (
+                <Td px="6">
+                    <Checkbox
+                        colorScheme="facebook"
+                        borderColor="gray.700"
+                        isChecked={isRowSelected}
+                        onChange={handleToggleRow}
+                    />
+                </Td>
+            )}
             {columns.map((column) => (
                 <TableColumn<T>
                     key={`row-${index}-column-${column}`}
@@ -87,21 +89,25 @@ export function TableRow<T>(props: TableRowProps<T>): JSX.Element {
                             <Icon as={RiEyeLine} />
                         </Button>
                     )}
-                    <Button
-                        size="xs"
-                        colorScheme="teal"
-                        onClick={handleEditRow}
-                        data-testid={`row-${index}-edit`}>
-                        <Icon as={RiEditLine} />
-                    </Button>
-                    <Button
-                        size="xs"
-                        colorScheme="red"
-                        onClick={handleDeleteRow}
-                        isLoading={isRowBeingDeleted}
-                        data-testid={`row-${index}-delete`}>
-                        <Icon as={RiDeleteBinLine} />
-                    </Button>
+                    {onClickEdit && (
+                        <Button
+                            size="xs"
+                            colorScheme="teal"
+                            onClick={handleEditRow}
+                            data-testid={`row-${index}-edit`}>
+                            <Icon as={RiEditLine} />
+                        </Button>
+                    )}
+                    {onClickDelete && (
+                        <Button
+                            size="xs"
+                            colorScheme="red"
+                            onClick={handleDeleteRow}
+                            isLoading={isRowBeingDeleted}
+                            data-testid={`row-${index}-delete`}>
+                            <Icon as={RiDeleteBinLine} />
+                        </Button>
+                    )}
                 </Flex>
             </Td>
         </Tr>

@@ -53,6 +53,7 @@ export function WideTable<T>(props: TableProps<T>): JSX.Element {
                     toggleSort={toggleSort}
                     SortOrderIcon={SortOrderIcon}
                     sortKey={sortKey}
+                    onClickDelete={onClickDelete}
                 />
                 <Tbody>
                     {data.map((row, index) => (

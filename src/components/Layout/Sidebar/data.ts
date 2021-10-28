@@ -19,12 +19,6 @@ export interface MenuData {
 }
 
 export const sidebarMenusCustomer: MenuData[] = [
-    // {
-    //     id: 0,
-    //     to: '/',
-    //     label: 'Home',
-    //     icon: GoHome,
-    // },
     {
         id: 1,
         to: '/balance',

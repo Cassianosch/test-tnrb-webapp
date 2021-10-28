@@ -31,7 +31,6 @@ const AuthRoutes = (): JSX.Element => (
 
 const AppRoutesCustomers = (): JSX.Element => (
     <Switch>
-        {/* <Route exact path="/" component={HomePage} /> */}
         <Route exact path="/balance" component={BalancePage} />
         <Route exact path="/income/:type?" component={IncomePage} />
         <Route exact path="/outcome" component={OutcomePage} />
