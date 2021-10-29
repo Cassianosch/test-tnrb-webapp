@@ -53,7 +53,7 @@ export const dateToInputValue = (date: string): string =>
     date.replace(' ', 'T').substr(0, 16);
 
 export const inputValueToDate = (date: string): string =>
-    `${date.replace('T', ' ')}:00`;
+    `${date.replace('T', ' ')}:01`;
 
 export const currentDateToFilter = () => {
     const date = new Date();

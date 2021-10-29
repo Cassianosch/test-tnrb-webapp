@@ -95,7 +95,7 @@ export const IncomePage = (): JSX.Element => {
                                     data={incomes?.pending}
                                     onClickEdit={(row) => setEditing(row)}
                                     onClickDelete={({ id }) =>
-                                        handleDelete(id, 'out')
+                                        handleDelete(id, 'in')
                                     }
                                     paginationProps={{ total: 0, current: 1 }}
                                     customRenderers={{
@@ -122,7 +122,7 @@ export const IncomePage = (): JSX.Element => {
                                     data={incomes?.accepted}
                                     onClickEdit={(row) => setEditing(row)}
                                     onClickDelete={({ id }) =>
-                                        handleDelete(id, 'out')
+                                        handleDelete(id, 'in')
                                     }
                                     paginationProps={{ total: 0, current: 1 }}
                                     customRenderers={{
@@ -149,7 +149,7 @@ export const IncomePage = (): JSX.Element => {
                                     data={incomes?.rejected}
                                     onClickEdit={(row) => setEditing(row)}
                                     onClickDelete={({ id }) =>
-                                        handleDelete(id, 'out')
+                                        handleDelete(id, 'in')
                                     }
                                     paginationProps={{ total: 0, current: 1 }}
                                     customRenderers={{

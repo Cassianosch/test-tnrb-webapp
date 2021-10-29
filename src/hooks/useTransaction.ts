@@ -146,6 +146,8 @@ export default (): useTransactionHookData => {
 
                 if (session && session.user.admin === 1) {
                     await handleGetRows();
+                } else if (type === 'in') {
+                    await handleGetRowsIncome(currentDateToFilter());
                 } else {
                     await handleGetRowsBalance(currentDateToFilter(), type);
                 }
@@ -159,6 +161,7 @@ export default (): useTransactionHookData => {
             _delete,
             handleGetRows,
             handleGetRowsBalance,
+            handleGetRowsIncome,
             session,
             showErrorToast,
             showSuccessToast,

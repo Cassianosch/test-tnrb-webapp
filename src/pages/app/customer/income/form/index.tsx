@@ -24,6 +24,7 @@ import {
     extractCurrencyInputValue,
     dateToInputValue,
     convertCurrencyNumber,
+    inputValueToDate,
 } from '../../../../../utils/helpers';
 import { typeOptions } from './data';
 import useSession from '../../../../../hooks/useSession';
@@ -101,13 +102,13 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         }
     }, [editing]);
 
-    const handleEditFormConstruct = (data) => {
+    const handleEditFormConstruct = (data: TransactionFormImageData) => {
         const newData = data;
         delete newData.image;
         return newData;
     };
 
-    const handleMultipartConstruct = (data) => {
+    const handleMultipartConstruct = (data: TransactionFormImageData) => {
         const formData = new FormData();
         formData.append('image', data.image[0]);
         formData.append('amount', convertCurrencyNumber(data.amount));
@@ -119,13 +120,23 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
     const onSubmit = useCallback<SubmitHandler<TransactionFormImageData>>(
         async (data) => {
             try {
+                const reasambleDate = data;
+                reasambleDate.date = inputValueToDate(data.date);
+                console.log('====================================');
+                console.log(reasambleDate);
+                console.log('====================================');
+                return;
                 if (editing)
                     await handleUpdate(
                         editing.id,
-                        handleEditFormConstruct(data),
+                        handleEditFormConstruct(reasambleDate),
                         'in',
                     );
-                else await handleCreate(handleMultipartConstruct(data), 'in');
+                else
+                    await handleCreate(
+                        handleMultipartConstruct(reasambleDate),
+                        'in',
+                    );
 
                 setEditing(null);
 
