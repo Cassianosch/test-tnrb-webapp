@@ -69,9 +69,24 @@ export const IncomePage = (): JSX.Element => {
                     />
                     <Tabs variant="soft-rounded" defaultIndex={1}>
                         <TabList>
-                            <Tab>Pending</Tab>
-                            <Tab>Accepted</Tab>
-                            <Tab>Rejected</Tab>
+                            <Tab>
+                                Pending
+                                {incomes?.pending.length
+                                    ? ` - ${incomes?.pending.length}`
+                                    : null}
+                            </Tab>
+                            <Tab>
+                                Accepted
+                                {incomes?.accepted.length
+                                    ? ` - ${incomes?.accepted.length}`
+                                    : null}
+                            </Tab>
+                            <Tab>
+                                Rejected
+                                {incomes?.rejected.length
+                                    ? ` - ${incomes?.rejected.length}`
+                                    : null}
+                            </Tab>
                         </TabList>
                         <TabPanels>
                             <TabPanel>
