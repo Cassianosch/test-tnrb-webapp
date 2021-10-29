@@ -68,7 +68,6 @@ const _create = async (data: TransactionFormData): Promise<void> => {
 };
 const _createIncome = async (data: TransactionFormData): Promise<void> => {
     try {
-        // "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
         await api.post(`transactions`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data;',
