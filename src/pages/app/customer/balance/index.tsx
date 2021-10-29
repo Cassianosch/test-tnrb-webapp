@@ -82,7 +82,7 @@ export const BalancePage = (): JSX.Element => {
                     </Grid>
                     <Heading fontSize="2xl">Transactions</Heading>
                     <Table<TransactionFormPreloadData>
-                        columns={['description', 'date', 'amount']}
+                        columns={['description', 'date', 'amount', 'status']}
                         data={balance?.transactions}
                         paginationProps={{ total: 0, current: 1 }}
                         customRenderers={{
@@ -98,6 +98,14 @@ export const BalancePage = (): JSX.Element => {
                                             ? value * -1
                                             : value,
                                     )}
+                                </Text>
+                            ),
+                            status: (value) => (
+                                <Text
+                                    as="span"
+                                    fontWeight="normal"
+                                    style={{ textTransform: 'capitalize' }}>
+                                    {value}
                                 </Text>
                             ),
                         }}
