@@ -122,10 +122,6 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
             try {
                 const reasambleDate = data;
                 reasambleDate.date = inputValueToDate(data.date);
-                console.log('====================================');
-                console.log(reasambleDate);
-                console.log('====================================');
-                return;
                 if (editing)
                     await handleUpdate(
                         editing.id,
