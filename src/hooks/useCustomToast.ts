@@ -13,7 +13,7 @@ export default (): useCustomToastHookData => {
         (err: string) => {
             toast({
                 status: 'error',
-                title: 'Algo deu errado',
+                title: 'Something went wront',
                 description: err,
                 isClosable: true,
             });
@@ -25,7 +25,7 @@ export default (): useCustomToastHookData => {
         (msg: string) => {
             toast({
                 status: 'success',
-                title: 'Sucesso',
+                title: 'Success',
                 description: msg,
                 isClosable: true,
             });

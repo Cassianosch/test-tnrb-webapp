@@ -8,6 +8,7 @@ import {
 import { transactionServices } from '../services/transaction';
 import useCustomToast from './useCustomToast';
 import useSession from './useSession';
+import { currentDateToFilter } from '../utils/helpers';
 
 interface useTransactionHookData {
     rows: TransactionData[];
@@ -84,7 +85,7 @@ export default (): useTransactionHookData => {
             try {
                 await _create(values);
 
-                await handleGetRowsBalance('01-2021', type);
+                await handleGetRowsBalance(currentDateToFilter(), type);
 
                 showSuccessToast('Successfully created.');
             } catch (err) {
@@ -99,7 +100,7 @@ export default (): useTransactionHookData => {
             try {
                 await _createIncome(values);
 
-                await handleGetRowsIncome('01-2021');
+                await handleGetRowsIncome(currentDateToFilter());
 
                 showSuccessToast('Successfully created.');
             } catch (err) {
@@ -117,7 +118,7 @@ export default (): useTransactionHookData => {
                 if (session && session.user.admin === 1) {
                     await handleGetRows();
                 } else {
-                    await handleGetRowsBalance('01-2021', type);
+                    await handleGetRowsBalance(currentDateToFilter(), type);
                 }
 
                 showSuccessToast('Successfully updated.');
@@ -143,7 +144,7 @@ export default (): useTransactionHookData => {
                 if (session && session.user.admin === 1) {
                     await handleGetRows();
                 } else {
-                    await handleGetRowsBalance('01-2021', type);
+                    await handleGetRowsBalance(currentDateToFilter(), type);
                 }
 
                 showSuccessToast('Successfully deleted.');
