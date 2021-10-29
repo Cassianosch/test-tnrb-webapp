@@ -118,7 +118,7 @@ export default (): useTransactionHookData => {
                 if (session && session.user.admin === 1) {
                     await handleGetRows();
                 } else {
-                    await handleGetRowsBalance(currentDateToFilter(), type);
+                    await handleGetRowsIncome(currentDateToFilter());
                 }
 
                 showSuccessToast('Successfully updated.');
@@ -129,7 +129,7 @@ export default (): useTransactionHookData => {
         [
             _update,
             handleGetRows,
-            handleGetRowsBalance,
+            handleGetRowsIncome,
             session,
             showErrorToast,
             showSuccessToast,

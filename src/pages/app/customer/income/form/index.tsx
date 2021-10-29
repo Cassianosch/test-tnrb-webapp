@@ -15,6 +15,7 @@ import api from '../../../../../services/api';
 import {
     TransactionData,
     TransactionFormImageData,
+    TransactionFormData,
 } from '../../../../../interfaces/transaction';
 import { FormInput } from '../../../../../components/Form/Input';
 import { FormInputCurrency } from '../../../../../components/Form/Input/Currency';
@@ -70,7 +71,7 @@ interface TransactionFormProps {
     handleCreate(values: unknown, type: string): Promise<void>;
     handleUpdate(
         id_master: number,
-        values: TransactionFormImageData,
+        values: TransactionFormData,
         type: string,
     ): Promise<void>;
 }
@@ -94,6 +95,18 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         resolver: yupResolver(TransactionFormSchema),
     });
 
+    useEffect(() => {
+        if (editing) {
+            TransactionFormSchema.fields.image = yup.mixed();
+        }
+    }, [editing]);
+
+    const handleEditFormConstruct = (data) => {
+        const newData = data;
+        delete newData.image;
+        return newData;
+    };
+
     const handleMultipartConstruct = (data) => {
         const formData = new FormData();
         formData.append('image', data.image[0]);
@@ -106,11 +119,12 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
     const onSubmit = useCallback<SubmitHandler<TransactionFormImageData>>(
         async (data) => {
             try {
-                // console.log('====================================');
-                // console.log(TransactionFormSchema);
-                // console.log('====================================');
-                // return;
-                if (editing) await handleUpdate(editing.id, data, 'in');
+                if (editing)
+                    await handleUpdate(
+                        editing.id,
+                        handleEditFormConstruct(data),
+                        'in',
+                    );
                 else await handleCreate(handleMultipartConstruct(data), 'in');
 
                 setEditing(null);
@@ -228,15 +242,17 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                     {...register('type')}
                 />
             </GridItem>
-            <GridItem colSpan={{ base: 6, md: 3 }}>
-                <FormInput
-                    name="image"
-                    label="Image"
-                    type="file"
-                    error={errors.image}
-                    {...register('image')}
-                />
-            </GridItem>
+            {!editing && (
+                <GridItem colSpan={{ base: 6, md: 3 }}>
+                    <FormInput
+                        name="image"
+                        label="Image"
+                        type="file"
+                        error={errors.image}
+                        {...register('image')}
+                    />
+                </GridItem>
+            )}
             {editing && (
                 <GridItem colSpan={{ base: 6, md: 4, lg: 3 }}>
                     <Flex
