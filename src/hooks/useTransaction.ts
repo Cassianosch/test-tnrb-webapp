@@ -17,10 +17,7 @@ interface useTransactionHookData {
     incomes: TransactionFormIncomeData;
     handleGetRowsIncome(period?: string): Promise<void>;
     handleCreate(values: TransactionFormData, type?: string): Promise<void>;
-    handleCreateIncome(
-        values: TransactionFormData,
-        type?: string,
-    ): Promise<void>;
+    handleCreateIncome(values: TransactionFormData): Promise<void>;
     handleUpdate(
         id_plan: number,
         values: TransactionFormData,
@@ -98,18 +95,18 @@ export default (): useTransactionHookData => {
     );
 
     const handleCreateIncome = useCallback(
-        async (values: any, type: string) => {
+        async (values: any) => {
             try {
                 await _createIncome(values);
 
-                await handleGetRowsBalance('01-2021', type);
+                await handleGetRowsIncome('01-2021');
 
                 showSuccessToast('Successfully created.');
             } catch (err) {
                 showErrorToast(err);
             }
         },
-        [_createIncome, handleGetRowsBalance, showErrorToast, showSuccessToast],
+        [_createIncome, handleGetRowsIncome, showErrorToast, showSuccessToast],
     );
 
     const handleUpdate = useCallback(

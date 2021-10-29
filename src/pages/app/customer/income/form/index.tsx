@@ -37,18 +37,31 @@ const TransactionFormSchema: yup.SchemaOf<TransactionFormImageData> = yup
         status: yup.mixed(),
         image: yup
             .mixed()
-            .required('Image is mandatory')
-            .test('fileType', 'Unsupported File Format', (value) =>
-                ['image/jpg', 'image/jpeg', 'image/png'].includes(
-                    value[0].type,
-                ),
-            ),
+            .test(
+                'fileExists',
+                'File is mandatory',
+                (value) => value.length > 0,
+            )
+            .test('fileSize', 'File too large', (value) => {
+                if (value.length > 0) {
+                    return value[0].size <= 4000000;
+                }
+                return true;
+            })
+            .test('fileFormat', 'Unsupported file type', (value) => {
+                if (value.length > 0) {
+                    return ['image/jpg', 'image/jpeg', 'image/png'].includes(
+                        value[0].type,
+                    );
+                }
+                return false;
+            }),
     });
 
 interface TransactionFormProps {
     editing: TransactionData | null;
     setEditing: React.Dispatch<React.SetStateAction<TransactionData | null>>;
-    handleCreate(values: any, type: string): Promise<void>;
+    handleCreate(values: unknown, type: string): Promise<void>;
     handleUpdate(
         id_master: number,
         values: TransactionFormImageData,
@@ -75,26 +88,20 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         resolver: yupResolver(TransactionFormSchema),
     });
 
-    // const onImageChange = event => {
-    //     if (event.target.files && event.target.files[0]) {
-    //       let img = event.target.files[0];
-    //       this.setState({
-    //         image: URL.createObjectURL(img)
-    //       });
-    //     }
-    //   };
+    const handleMultipartConstruct = (data) => {
+        const formData = new FormData();
+        formData.append('image', data.image[0]);
+        formData.append('amount', convertCurrencyNumber(data.amount));
+        formData.append('date', data.date);
+        formData.append('description', data.description);
+        formData.append('type', data.type);
+        return formData;
+    };
     const onSubmit = useCallback<SubmitHandler<TransactionFormImageData>>(
         async (data) => {
             try {
-                const formData = new FormData();
-                formData.append('image', data.image[0]);
-                formData.append('amount', convertCurrencyNumber(data.amount));
-                formData.append('date', data.date);
-                formData.append('description', data.description);
-                formData.append('type', data.type);
-
                 if (editing) await handleUpdate(editing.id, data, 'in');
-                else await handleCreate(formData, 'in');
+                else await handleCreate(handleMultipartConstruct(data), 'in');
 
                 setEditing(null);
 
@@ -219,7 +226,6 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                     error={errors.image}
                     {...register('image')}
                 />
-                {errors.image && <p>{errors.image.message}</p>}
             </GridItem>
             {editing && (
                 <GridItem colSpan={{ base: 6, md: 4, lg: 3 }}>

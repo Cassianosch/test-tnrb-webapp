@@ -11,14 +11,15 @@ import { sessionServices } from '../../../services/session';
 import useSession from '../../../hooks/useSession';
 
 const signupFormSchema: yup.SchemaOf<SignupFormData> = yup.object().shape({
-    name: yup
-        .string()
-        .required('Name is mandatory'),
+    name: yup.string().required('Name is mandatory'),
     email: yup
         .string()
         .required('E-mail is mandatory')
         .email('Shpuld be an valid email'),
-    password: yup.string().required('Password is mandatory'),
+    password: yup
+        .string()
+        .required('Password is mandatory')
+        .min(8, 'At least 8 characters'),
 });
 
 export const SignupPage = (): JSX.Element => {

@@ -68,7 +68,9 @@ export const BalancePage = (): JSX.Element => {
                             <Text fontSize="xl">
                                 Expenses:{' '}
                                 {formatterCurrencyDolar.format(
-                                    balance.negative * -1,
+                                    balance.negative === 0
+                                        ? balance.negative
+                                        : balance.negative * -1,
                                 )}
                             </Text>
                             <Link to="/outcome">
