@@ -32,7 +32,7 @@ const AuthRoutes = (): JSX.Element => (
 const AppRoutesCustomers = (): JSX.Element => (
     <Switch>
         <Route exact path="/balance" component={BalancePage} />
-        <Route exact path="/income/:type?" component={IncomePage} />
+        <Route exact path="/income" component={IncomePage} />
         <Route exact path="/outcome" component={OutcomePage} />
         <Route exact path="/notification" component={NotificationPage} />
         <Route exact path="/profile" component={ProfilePage} />

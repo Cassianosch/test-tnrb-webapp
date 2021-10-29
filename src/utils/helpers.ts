@@ -154,3 +154,8 @@ export const formatterDate = new Intl.DateTimeFormat('en-US', {
     hour: '2-digit',
     minute: '2-digit',
 });
+
+export const convertCurrencyNumber = (value: number) => {
+    if (String(value).includes('.')) return String(value);
+    return String(`${value}.00`);
+};

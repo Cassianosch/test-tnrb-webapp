@@ -29,7 +29,7 @@ export const IncomePage = (): JSX.Element => {
     const {
         incomes,
         handleGetRowsIncome,
-        handleCreate,
+        handleCreateIncome,
         handleUpdate,
         handleDelete,
     } = useAdministrationCheck();
@@ -53,7 +53,7 @@ export const IncomePage = (): JSX.Element => {
                 <TransactionForm
                     editing={editing}
                     setEditing={setEditing}
-                    handleCreate={handleCreate}
+                    handleCreate={handleCreateIncome}
                     handleUpdate={handleUpdate}
                 />
             </Flex>
@@ -67,7 +67,7 @@ export const IncomePage = (): JSX.Element => {
                         defaultValue={currentDateToFilter()}
                         onChange={handleFilter}
                     />
-                    <Tabs variant="soft-rounded">
+                    <Tabs variant="soft-rounded" defaultIndex={1}>
                         <TabList>
                             <Tab>Pending</Tab>
                             <Tab>Accepted</Tab>

@@ -11,9 +11,10 @@ import {
 import * as yup from 'yup';
 import { SubmitHandler, Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import api from '../../../../../services/api';
 import {
     TransactionData,
-    TransactionFormData,
+    TransactionFormImageData,
 } from '../../../../../interfaces/transaction';
 import { FormInput } from '../../../../../components/Form/Input';
 import { FormInputCurrency } from '../../../../../components/Form/Input/Currency';
@@ -21,33 +22,45 @@ import { FormSelect } from '../../../../../components/Form/Select';
 import {
     extractCurrencyInputValue,
     dateToInputValue,
-    inputValueToDate,
+    convertCurrencyNumber,
 } from '../../../../../utils/helpers';
 import { typeOptions } from './data';
+import useSession from '../../../../../hooks/useSession';
 
-const TransactionFormSchema: yup.SchemaOf<TransactionFormData> = yup
+const TransactionFormSchema: yup.SchemaOf<TransactionFormImageData> = yup
     .object()
     .shape({
-        amount: yup.number().required('Resolução obrigatória'),
-        date: yup.string().nullable(),
-        description: yup.string().required('Descrição obrigatória'),
+        amount: yup.number().required('Amount is mandatory'),
+        date: yup.string().required('Date is mandatory'),
+        description: yup.string().required('Description is mandatory'),
         type: yup.mixed(),
         status: yup.mixed(),
+        image: yup
+            .mixed()
+            .required('Image is mandatory')
+            .test('fileType', 'Unsupported File Format', (value) =>
+                ['image/jpg', 'image/jpeg', 'image/png'].includes(
+                    value[0].type,
+                ),
+            ),
     });
 
 interface TransactionFormProps {
     editing: TransactionData | null;
     setEditing: React.Dispatch<React.SetStateAction<TransactionData | null>>;
-    handleCreate(values: TransactionFormData, type: string): Promise<void>;
+    handleCreate(values: any, type: string): Promise<void>;
     handleUpdate(
         id_master: number,
-        values: TransactionFormData,
+        values: TransactionFormImageData,
         type: string,
     ): Promise<void>;
 }
 
 export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
+    const [photoURL, setPhotoURL] = useState<string>('');
     const { editing, setEditing, handleCreate, handleUpdate } = props;
+
+    const { session } = useSession();
 
     const toast = useToast();
 
@@ -58,18 +71,30 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         handleSubmit,
         reset,
         formState: { errors, isSubmitting },
-    } = useForm<TransactionFormData>({
+    } = useForm<TransactionFormImageData>({
         resolver: yupResolver(TransactionFormSchema),
     });
-    const onSubmit = useCallback<SubmitHandler<TransactionFormData>>(
+
+    // const onImageChange = event => {
+    //     if (event.target.files && event.target.files[0]) {
+    //       let img = event.target.files[0];
+    //       this.setState({
+    //         image: URL.createObjectURL(img)
+    //       });
+    //     }
+    //   };
+    const onSubmit = useCallback<SubmitHandler<TransactionFormImageData>>(
         async (data) => {
             try {
-                const reasambleDate = data;
-                reasambleDate.date = inputValueToDate(data.date);
+                const formData = new FormData();
+                formData.append('image', data.image[0]);
+                formData.append('amount', convertCurrencyNumber(data.amount));
+                formData.append('date', data.date);
+                formData.append('description', data.description);
+                formData.append('type', data.type);
 
-                if (editing)
-                    await handleUpdate(editing.id, reasambleDate, 'out');
-                else await handleCreate(reasambleDate, 'out');
+                if (editing) await handleUpdate(editing.id, data, 'in');
+                else await handleCreate(formData, 'in');
 
                 setEditing(null);
 
@@ -95,22 +120,38 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         ],
     );
 
+    // const handle;
+
+    const handlePhoto = useCallback(
+        (id: number) => {
+            setPhotoURL(
+                `${api.defaults.baseURL}transactions-image/${id}/${session.access_token}`,
+            );
+        },
+        [session.access_token],
+    );
     useEffect(() => {
         if (editing) {
-            Object.keys(editing).forEach((key: keyof TransactionFormData) => {
-                if (key in TransactionFormSchema.fields) {
-                    switch (key) {
-                        case 'date':
-                            setValue(key, dateToInputValue(editing[key]));
-                            break;
-                        default:
-                            setValue(key, editing[key]);
-                            break;
+            Object.keys(editing).forEach(
+                (key: keyof TransactionFormImageData) => {
+                    if (key in TransactionFormSchema.fields) {
+                        switch (key) {
+                            case 'date':
+                                setValue(key, dateToInputValue(editing[key]));
+                                break;
+                            case 'image':
+                                handlePhoto(editing.id);
+                                break;
+
+                            default:
+                                setValue(key, editing[key]);
+                                break;
+                        }
                     }
-                }
-            });
+                },
+            );
         } else reset();
-    }, [editing, setValue, reset]);
+    }, [editing, setValue, reset, handlePhoto]);
 
     const handleChangePrice = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,10 +159,6 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
         },
         [setValue],
     );
-    const handleCancelEdit = useCallback(() => {
-        setEditing(null);
-        setValue('amount', 0);
-    }, [setEditing, setValue]);
 
     return (
         <Grid
@@ -174,7 +211,17 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                     {...register('type')}
                 />
             </GridItem>
-            {/* {editing && (
+            <GridItem colSpan={{ base: 6, md: 3 }}>
+                <FormInput
+                    name="image"
+                    label="Image"
+                    type="file"
+                    error={errors.image}
+                    {...register('image')}
+                />
+                {errors.image && <p>{errors.image.message}</p>}
+            </GridItem>
+            {editing && (
                 <GridItem colSpan={{ base: 6, md: 4, lg: 3 }}>
                     <Flex
                         direction={{ base: 'column', sm: 'row' }}
@@ -189,7 +236,7 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                         />
                     </Flex>
                 </GridItem>
-            )} */}
+            )}
             <GridItem colSpan={6}>
                 <Flex
                     direction="row"
@@ -201,7 +248,7 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
                             type="button"
                             colorScheme="blue"
                             variant="ghost"
-                            onClick={handleCancelEdit}>
+                            onClick={() => setEditing(null)}>
                             <Text fontSize="sm" fontWeight="normal">
                                 Cancel Edit
                             </Text>

@@ -20,6 +20,7 @@ interface TransactionServiceProps {
     ): Promise<TransactionFormBalanceData>;
     _getIncomes(period: string): Promise<TransactionFormIncomeData>;
     _create(data: TransactionFormData): Promise<void>;
+    _createIncome(data: TransactionFormData): Promise<void>;
     _update(params: _updateParams): Promise<void>;
     _delete(id_plan: number): Promise<void>;
     _getPhoto(id: number): Promise<string>;
@@ -65,6 +66,18 @@ const _create = async (data: TransactionFormData): Promise<void> => {
         throw serviceErrorHandler(err);
     }
 };
+const _createIncome = async (data: TransactionFormData): Promise<void> => {
+    try {
+        // "Content-Type": `multipart/form-data; boundary=${data._boundary}`,
+        await api.post(`transactions`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data;',
+            },
+        });
+    } catch (err) {
+        throw serviceErrorHandler(err);
+    }
+};
 
 const _update = async (params: _updateParams): Promise<void> => {
     try {
@@ -97,6 +110,7 @@ export const transactionServices = (): TransactionServiceProps => ({
     _getBalance,
     _getIncomes,
     _create,
+    _createIncome,
     _update,
     _delete,
     _getPhoto,

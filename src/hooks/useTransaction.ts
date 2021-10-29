@@ -17,6 +17,10 @@ interface useTransactionHookData {
     incomes: TransactionFormIncomeData;
     handleGetRowsIncome(period?: string): Promise<void>;
     handleCreate(values: TransactionFormData, type?: string): Promise<void>;
+    handleCreateIncome(
+        values: TransactionFormData,
+        type?: string,
+    ): Promise<void>;
     handleUpdate(
         id_plan: number,
         values: TransactionFormData,
@@ -32,8 +36,15 @@ export default (): useTransactionHookData => {
 
     const { showErrorToast, showSuccessToast } = useCustomToast();
 
-    const { _getAll, _getBalance, _getIncomes, _create, _update, _delete } =
-        transactionServices();
+    const {
+        _getAll,
+        _getBalance,
+        _getIncomes,
+        _create,
+        _createIncome,
+        _update,
+        _delete,
+    } = transactionServices();
 
     const { session } = useSession();
 
@@ -84,6 +95,21 @@ export default (): useTransactionHookData => {
             }
         },
         [_create, handleGetRowsBalance, showErrorToast, showSuccessToast],
+    );
+
+    const handleCreateIncome = useCallback(
+        async (values: any, type: string) => {
+            try {
+                await _createIncome(values);
+
+                await handleGetRowsBalance('01-2021', type);
+
+                showSuccessToast('Successfully created.');
+            } catch (err) {
+                showErrorToast(err);
+            }
+        },
+        [_createIncome, handleGetRowsBalance, showErrorToast, showSuccessToast],
     );
 
     const handleUpdate = useCallback(
@@ -146,6 +172,7 @@ export default (): useTransactionHookData => {
         handleGetRowsBalance,
         handleGetRowsIncome,
         handleCreate,
+        handleCreateIncome,
         handleUpdate,
         handleDelete,
     };

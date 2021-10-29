@@ -1,6 +1,6 @@
 export const typeOptions = [
     {
-        value: 'out',
-        label: 'Expense',
+        value: 'in',
+        label: 'Check Deposit',
     },
 ];

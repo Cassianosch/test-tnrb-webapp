@@ -29,9 +29,9 @@ import useSession from '../../../../../hooks/useSession';
 const TransactionFormSchema: yup.SchemaOf<TransactionFormImageData> = yup
     .object()
     .shape({
-        amount: yup.number().required('Resolução obrigatória'),
-        date: yup.string().nullable(),
-        description: yup.string().required('Descrição obrigatória'),
+        amount: yup.number().required('Amount is mandatory'),
+        date: yup.string().required('Date is mandatory'),
+        description: yup.string().required('Description is mandatory'),
         type: yup.mixed(),
         status: yup.mixed(),
         image: yup.mixed(),

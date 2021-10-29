@@ -27,7 +27,7 @@ export const sidebarMenusCustomer: MenuData[] = [
     },
     {
         id: 2,
-        to: '/income/accepted',
+        to: '/income',
         label: 'Incomes',
         icon: GoArrowDown,
     },
@@ -39,7 +39,7 @@ export const sidebarMenusCustomer: MenuData[] = [
     },
     {
         id: 4,
-        to: '/income/pending',
+        to: '/income',
         label: 'Checks',
         icon: GoGithubAction,
     },
