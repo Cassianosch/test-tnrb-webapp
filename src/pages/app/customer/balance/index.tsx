@@ -9,6 +9,7 @@ import {
     formatterCurrencyDolar,
     formatterDate,
     currentDateToFilter,
+    statusOnTableImage,
 } from '../../../../utils/helpers';
 import { FormInput } from '../../../../components/Form/Input';
 
@@ -100,12 +101,9 @@ export const BalancePage = (): JSX.Element => {
                                     )}
                                 </Text>
                             ),
-                            status: (value) => (
-                                <Text
-                                    as="span"
-                                    fontWeight="normal"
-                                    style={{ textTransform: 'capitalize' }}>
-                                    {value}
+                            status: (value, column) => (
+                                <Text as="span" fontWeight="normal">
+                                    {statusOnTableImage(value, column)}
                                 </Text>
                             ),
                         }}
