@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Container } from '../../../../components/Layout';
 
 export const HelpPage = (): JSX.Element => (

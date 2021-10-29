@@ -11,5 +11,6 @@
     "title": "Título",
     "value": "Preço",
     "has_local": "Possui local",
-    "user.name": "User"
+    "user.name": "User",
+    "user.id": "Account"
 }

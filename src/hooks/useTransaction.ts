@@ -96,7 +96,7 @@ export default (): useTransactionHookData => {
     );
 
     const handleCreateIncome = useCallback(
-        async (values: any) => {
+        async (values) => {
             try {
                 await _createIncome(values);
 
@@ -117,8 +117,10 @@ export default (): useTransactionHookData => {
 
                 if (session && session.user.admin === 1) {
                     await handleGetRows();
-                } else {
+                } else if (type === 'in') {
                     await handleGetRowsIncome(currentDateToFilter());
+                } else {
+                    await handleGetRowsBalance(currentDateToFilter(), type);
                 }
 
                 showSuccessToast('Successfully updated.');
@@ -129,6 +131,7 @@ export default (): useTransactionHookData => {
         [
             _update,
             handleGetRows,
+            handleGetRowsBalance,
             handleGetRowsIncome,
             session,
             showErrorToast,

@@ -1,6 +1,4 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useBreakpointValue } from '@chakra-ui/react';
-import { SmallTable } from './Small';
 import { WideTable } from './Wide';
 import { Pagination } from '../Pagination';
 import { TableWrapperProps } from './types';
@@ -31,12 +29,6 @@ export function Table<T>(props: TableWrapperProps<T>): JSX.Element {
 
     const [selected, setSelected] = useState<T[]>([]);
 
-    const isWideVersion = useBreakpointValue({
-        base: false,
-        xs: false,
-        md: true,
-    });
-
     const toggleSort = useCallback(
         (key: keyof T) => {
             if (key === sortByKey)
@@ -65,11 +57,7 @@ export function Table<T>(props: TableWrapperProps<T>): JSX.Element {
 
     return props.data.length > 0 ? (
         <>
-            {isWideVersion ? (
-                <WideTable<T> {...tableProps} />
-            ) : (
-                <SmallTable<T> {...tableProps} />
-            )}
+            <WideTable<T> {...tableProps} />
             {props.paginationProps.total > 0 && (
                 <Pagination {...props.paginationProps} />
             )}

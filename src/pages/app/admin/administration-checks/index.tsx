@@ -35,9 +35,17 @@ export const AdministrationChecksPage = (): JSX.Element => {
             </Flex>
             <Heading fontSize="2xl">Check List</Heading>
             <Table<TransactionFormPreloadData>
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                columns={['user.name', 'description', 'date', 'amount']}
+                columns={[
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    'user.id',
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    'user.name',
+                    'description',
+                    'date',
+                    'amount',
+                ]}
                 data={rows}
                 onClickEdit={(row) => setEditing(row)}
                 onClickDelete={({ id }) => handleDelete(id, 'inout')}

@@ -1,13 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-    Button,
-    Flex,
-    Grid,
-    GridItem,
-    Text,
-    useToast,
-    Image,
-} from '@chakra-ui/react';
+import React, { useCallback, useEffect } from 'react';
+import { Button, Flex, Grid, GridItem, Text, useToast } from '@chakra-ui/react';
 import * as yup from 'yup';
 import { SubmitHandler, Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';

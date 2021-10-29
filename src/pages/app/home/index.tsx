@@ -17,7 +17,9 @@ export const HomePage = (): JSX.Element => (
                 filter="drop-shadow(2px 2px 1px #000)"
                 ml="-72px"
             />
-            <Heading style={{ fontVariant: 'small-caps' }}>TNRB - Bank System</Heading>
+            <Heading style={{ fontVariant: 'small-caps' }} color="#25a4ac">
+                TNRB - Bank System
+            </Heading>
         </Flex>
     </Container>
 );

@@ -71,7 +71,10 @@ export const OutcomePage = (): JSX.Element => {
                                 </Text>
                             ),
                             amount: (value) => (
-                                <Text as="span" fontWeight="normal">
+                                <Text
+                                    as="span"
+                                    fontWeight="normal"
+                                    textColor="red">
                                     {formatterCurrencyDolar.format(value * -1)}
                                 </Text>
                             ),

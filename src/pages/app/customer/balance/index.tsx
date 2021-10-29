@@ -93,7 +93,12 @@ export const BalancePage = (): JSX.Element => {
                                 </Text>
                             ),
                             amount: (value, column) => (
-                                <Text as="span" fontWeight="normal">
+                                <Text
+                                    as="span"
+                                    fontWeight="normal"
+                                    textColor={
+                                        column?.type === 'out' ? 'red' : ''
+                                    }>
                                     {formatterCurrencyDolar.format(
                                         column?.type === 'out'
                                             ? value * -1

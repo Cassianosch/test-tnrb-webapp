@@ -36,15 +36,17 @@ export function WideTable<T>(props: TableProps<T>): JSX.Element {
 
     return (
         <Flex direction="column" align="flex-end" gridGap="4">
-            <Button
-                variant="delete"
-                onClick={handleDeleteAll}
-                isDisabled={isDeleteAllDisabled}>
-                <Flex direction="row" align="center">
-                    <Icon as={RiDeleteBinLine} w="6" h="6" mr="4" />
-                    <Text>Deletar selecionados</Text>
-                </Flex>
-            </Button>
+            {onClickDelete && (
+                <Button
+                    variant="delete"
+                    onClick={handleDeleteAll}
+                    isDisabled={isDeleteAllDisabled}>
+                    <Flex direction="row" align="center">
+                        <Icon as={RiDeleteBinLine} w="6" h="6" mr="4" />
+                        <Text>Deletar selecionados</Text>
+                    </Flex>
+                </Button>
+            )}
             <Table variant="striped" colorScheme="blackAlpha">
                 <TableHead<T>
                     isMainCheckboxChecked={isMainCheckboxChecked}

@@ -51,7 +51,7 @@ export const LoginPage = (): JSX.Element => {
 
     return (
         <Container title="Login" type="auth">
-            <Heading>Login</Heading>
+            <Heading color="#25a4ac">Login</Heading>
             <Flex
                 w="full"
                 p="4"
