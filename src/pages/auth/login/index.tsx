@@ -87,7 +87,9 @@ export const LoginPage = (): JSX.Element => {
                 </Button>
             </Flex>
             <Link to="/signup">
-                <Text fontSize="xl">Signup</Text>
+                <Text fontSize="xl" textColor="#25a4ac">
+                    Signup
+                </Text>
             </Link>
         </Container>
     );

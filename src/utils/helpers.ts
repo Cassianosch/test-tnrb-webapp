@@ -10,7 +10,12 @@ export const serviceErrorHandler = (err: AxiosError): string => {
         }
 
         if ('message' in err.response.data) {
-            return err.response.data.message;
+            let allErrors = '';
+
+            Object.keys(err.response.data.message).forEach(function (key) {
+                allErrors += `${this[key]} `;
+            }, err.response.data.message);
+            return allErrors;
         }
     }
 

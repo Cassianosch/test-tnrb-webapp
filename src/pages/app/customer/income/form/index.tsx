@@ -35,27 +35,33 @@ const TransactionFormSchema: yup.SchemaOf<TransactionFormImageData> = yup
         description: yup.string().required('Description is mandatory'),
         type: yup.mixed(),
         status: yup.mixed(),
-        image: yup
-            .mixed()
-            .test(
-                'fileExists',
-                'File is mandatory',
-                (value) => value.length > 0,
-            )
-            .test('fileSize', 'File too large', (value) => {
-                if (value.length > 0) {
-                    return value[0].size <= 4000000;
-                }
-                return true;
-            })
-            .test('fileFormat', 'Unsupported file type', (value) => {
-                if (value.length > 0) {
-                    return ['image/jpg', 'image/jpeg', 'image/png'].includes(
-                        value[0].type,
-                    );
-                }
-                return false;
-            }),
+        image: (() => {
+            const validation = yup
+                .mixed()
+                .test(
+                    'fileExists',
+                    'File is mandatory',
+                    (value) => value.length > 0,
+                )
+                .test('fileSize', 'File too large', (value) => {
+                    if (value.length > 0) {
+                        return value[0].size <= 4000000;
+                    }
+                    return true;
+                })
+                .test('fileFormat', 'Unsupported file type', (value) => {
+                    if (value.length > 0) {
+                        return [
+                            'image/jpg',
+                            'image/jpeg',
+                            'image/png',
+                        ].includes(value[0].type);
+                    }
+                    return false;
+                });
+            // if (editing) validation = yup.mixed();
+            return validation;
+        })(),
     });
 
 interface TransactionFormProps {
@@ -100,6 +106,10 @@ export const TransactionForm = (props: TransactionFormProps): JSX.Element => {
     const onSubmit = useCallback<SubmitHandler<TransactionFormImageData>>(
         async (data) => {
             try {
+                // console.log('====================================');
+                // console.log(TransactionFormSchema);
+                // console.log('====================================');
+                // return;
                 if (editing) await handleUpdate(editing.id, data, 'in');
                 else await handleCreate(handleMultipartConstruct(data), 'in');
 
