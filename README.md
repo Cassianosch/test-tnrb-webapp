@@ -1,59 +1,36 @@
-This project was bootstrapped with
-[Create React App](https://github.com/facebook/create-react-app).
+Test - Made with reactjs
 
-## Available Scripts
+build a simplified banking system
 
-In the project directory, you can run:
+the system has 2 types of users
 
-### `yarn start`
+1. a customer
 
-Runs the app in the development mode.<br /> Open
-[http://localhost:3000](http://localhost:3000) to view it in the browser.
+2. an admin
 
-The page will reload if you make edits.<br /> You will also see any lint errors
-in the console.
+customer user stories:
 
-### `yarn test`
+-   a user can create a new account with username and password
 
-Launches the test runner in the interactive watch mode.<br /> See the section
-about
-[running tests](https://facebook.github.io/create-react-app/docs/running-tests)
-for more information.
+-   a user starts with 0 balance
 
-### `yarn build`
+-   a user can deposit more money to his account by uploading a picture of a check and entering the amount of the check. if the check is approved by an admin, the money is added to the bank account.
+-   /\*\*
+-   -   The picture can be of anything, you don't need to parse it or validate it in any way
+-   \*/
 
-Builds the app for production to the `build` folder.<br /> It correctly bundles
-React in production mode and optimizes the build for the best performance.
+-   to buy something, the user enters the amount and description; a user can only buy something if she has enough money to cover the cost.
 
-The build is minified and the filenames include the hashes.<br /> Your app is
-ready to be deployed!
+-   a user can see a list of balance changes including time and description.
 
-See the section about
-[deployment](https://facebook.github.io/create-react-app/docs/deployment) for
-more information.
+admin user stories:
 
-### `yarn eject`
+-   an admin account is already created with a hard coded username and password.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+-   an admin can see a list of pending check deposit pictures with amount and picture and click to approve or deny the deposit.
 
-If you aren’t satisfied with the build tool and configuration choices, you can
-`eject` at any time. This command will remove the single build dependency from
-your project.
+---
 
-Instead, it will copy all the configuration files and the transitive
-dependencies (webpack, Babel, ESLint, etc) right into your project so you have
-full control over them. All of the commands except `eject` will still work, but
-they will point to the copied scripts so you can tweak them. At this point
-you’re on your own.
+Simplifying Assumptions
 
-You don’t have to ever use `eject`. The curated feature set is suitable for
-small and middle deployments, and you shouldn’t feel obligated to use this
-feature. However we understand that this tool wouldn’t be useful if you couldn’t
-customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the
-[Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+-   an admin can’t be also a customer
